@@ -8,9 +8,27 @@ use App\Models\Post; // App\Models内のPostクラスをインポート
 
 class PostController extends Controller
 {
+    /**
+     * Post一覧を表示する
+     * 
+     * @param Post Postモデル
+     * @return array Postモデルリスト
+     */
     // publicはfunctionのスコープを定めている(publicはクラス外からのアクセスを許可する)
     public function index(Post $post) // インポートしたPostをインスタンス化して$postとして使用。
     {
-        return $post->get(); // $postの中身を戻り値にする。
+        return view('posts/index')->with(['posts' => $post->getPaginateByLimit()]); // blade内で使う変数'posts'を設定
+        // return view('posts/index')->with(['posts' => $post->getByLimit()]); // blade内で使う変数'posts'を設定
+    }
+    
+    /**
+     * 特定IDのpostを表示する
+     *
+     * @params Object Post // 引数の$postはid=1のPostインスタンス
+     * @return Reposnse post view
+     */
+    public function show(Post $post)
+    {
+        return view('posts/show')->with(['post' => $post]); // 'post'はbladeファイルで使う変数。中身は$postはid=1のPostインスタンス。
     }
 }
