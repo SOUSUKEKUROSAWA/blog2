@@ -43,6 +43,22 @@ class PostController extends Controller
     {
         $input = $request['post'];
         $post->fill($input)->save(); // fillでpostインスタンスを上書き，saveでINSERT文を実行
+
+        return redirect('/posts/' . $post->id);
+    }
+    
+    public function edit(Post $post)
+    {
+        return view('posts/edit')->with(['post' => $post]);
+    }
+    
+    public function update(PostRequest $request, Post $post)
+    {
+        $input_post = $request['post'];
+        $post->fill($input_post)->save();
+        // updateではなくfill+saveを使うことで，差分がある場合のみDBを更新する
+        // (差分がないのにupdated_Atが更新されてしまうことなどを防ぐ)
+    
         return redirect('/posts/' . $post->id);
     }
 }
