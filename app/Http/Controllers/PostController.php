@@ -4,7 +4,9 @@ namespace App\Http\Controllers; // ファイルがある場所のパスを示す
 
 //-- use宣言は外部にあるクラスをPostController内にインポートできる。
 use Illuminate\Http\Request; // vendor\laravel\framework\src\Illuminate~
+
 use App\Models\Post; // App\Models内のPostクラスをインポート
+use App\Http\Requests\PostRequest;
 
 class PostController extends Controller
 {
@@ -30,5 +32,17 @@ class PostController extends Controller
     public function show(Post $post)
     {
         return view('posts/show')->with(['post' => $post]); // 'post'はbladeファイルで使う変数。中身は$postはid=1のPostインスタンス。
+    }
+    
+    public function create()
+    {
+        return view('posts/create');
+    }
+    
+    public function store(PostRequest $request, Post $post)
+    {
+        $input = $request['post'];
+        $post->fill($input)->save(); // fillでpostインスタンスを上書き，saveでINSERT文を実行
+        return redirect('/posts/' . $post->id);
     }
 }
