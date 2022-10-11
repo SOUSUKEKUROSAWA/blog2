@@ -14,7 +14,15 @@ class Post extends Model
     protected $fillable = [
         'title',
         'body',
+        'category_id',
     ];
+    
+    // Categoryに対するリレーション
+    //「1対多」の関係なので単数系に
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
     
     public function getByLimit(int $limit_count = 10)
     {
@@ -25,6 +33,7 @@ class Post extends Model
     public function getPaginateByLimit(int $limit_count = 10)
     {
         // updated_atで降順に並べたあと、limitで件数制限をかける（Paginationインスタンス=>Collectionインスタンスを分割したようなもの）
-        return $this->orderBy('updated_at', 'DESC')->paginate($limit_count);
+        return $this::with('category')->orderBy('updated_at', 'DESC')->paginate($limit_count);
+        // 「$this::with('category')->...」の部分はEagerローディングを行っている(N+1問題の解決)
     }
 }
